@@ -995,6 +995,10 @@ void hp_mode_sampled_endfn_cb(hp_entry_t **entries)
 
 #if PHP_VERSION_ID >= 80000
 static void tracer_observer_begin(zend_execute_data *execute_data) {
+    if (!XHPROF_G(enabled)) {
+        return;
+    }
+
 #if PHP_VERSION_ID >= 80200
     if (execute_data->func->type == ZEND_INTERNAL_FUNCTION) {
         return;
@@ -1005,7 +1009,11 @@ static void tracer_observer_begin(zend_execute_data *execute_data) {
 }
 
 static void tracer_observer_end(zend_execute_data *execute_data, zval *return_value) {
-    if (XHPROF_G(entries)) {
+    if (!XHPROF_G(enabled)) {
+        return;
+    }
+
+    if (XHPROF_G(entries) && XHPROF_G(entries)->prev_hprof) {
 #if PHP_VERSION_ID >= 80200
         if (execute_data->func->type == ZEND_INTERNAL_FUNCTION) {
             return;
@@ -1018,9 +1026,6 @@ static void tracer_observer_end(zend_execute_data *execute_data, zval *return_va
 
 static zend_observer_fcall_handlers tracer_observer(zend_execute_data *execute_data) {
     zend_observer_fcall_handlers handlers = {NULL, NULL};
-    if (!XHPROF_G(enabled)) {
-        return handlers;
-    }
 
     if (!execute_data->func || !execute_data->func->common.function_name) {
         return handlers;
