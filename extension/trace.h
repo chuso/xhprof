@@ -149,6 +149,7 @@ static zend_always_inline int begin_profiling(zend_string *root_symbol, zend_exe
         (cur_entry)->hash_code = hash_code % XHPROF_FUNC_HASH_COUNTERS_SIZE;
         (cur_entry)->name_hprof = function_name;
         (cur_entry)->prev_hprof = (*(entries));
+        (cur_entry)->rlvl_hprof = 0;
 #if PHP_VERSION_ID >= 80000
         (cur_entry)->is_trace = 1;
 #endif
@@ -164,6 +165,8 @@ static zend_always_inline int begin_profiling(zend_string *root_symbol, zend_exe
         (cur_entry)->name_hprof = zend_string_copy((*(entries))->name_hprof);
         (cur_entry)->prev_hprof = (*(entries));
         (cur_entry)->is_trace = 0;
+        (cur_entry)->hash_code = (*(entries))->hash_code;
+        (cur_entry)->rlvl_hprof = 0;
         (*(entries)) = (cur_entry);
 #endif
         zend_string_release(function_name);
