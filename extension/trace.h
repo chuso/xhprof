@@ -168,6 +168,7 @@ static zend_always_inline int begin_profiling(zend_string *root_symbol, zend_exe
         (cur_entry)->hash_code = (*(entries))->hash_code;
         (cur_entry)->rlvl_hprof = 0;
         (*(entries)) = (cur_entry);
+        profile_curr = 1;
 #endif
         zend_string_release(function_name);
     }

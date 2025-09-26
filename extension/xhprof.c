@@ -1083,12 +1083,7 @@ ZEND_DLEXPORT void hp_execute_internal(zend_execute_data *execute_data, zval *re
         _zend_execute_internal(execute_data, return_value);
     }
 
-    if (XHPROF_G(entries)) {
-#if PHP_VERSION_ID < 80000
-        if (is_profiling != 1) {
-            return;
-        }
-#endif
+    if (is_profiling == 1 && XHPROF_G(entries)) {
         end_profiling();
     }
 }
